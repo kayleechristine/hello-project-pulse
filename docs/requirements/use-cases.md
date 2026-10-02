@@ -1927,6 +1927,66 @@ The student shall be able to cancel the use case at any time prior to submitting
 **Assumptions:**
 **Open Issues:**
 
+### **UC-INS-nudge-non-submitters: The instructor nudges students who have not submitted required weekly work**
+
+**UC ID and Name:** UC-INS-nudge-non-submitters: Nudge students who have not submitted required weekly work
+**Created By:**
+**Date Created:**
+**Primary Actor:** instructor
+**Secondary Actors:** student
+**Trigger:** The instructor indicates to review which students in a course section have not yet submitted the required weekly activity report or peer evaluation for the selected week and send a reminder to the missing students.
+**Description:** The instructor wants to identify students in her course section who have not yet submitted the required weekly work, so that she can send a reminder only to the students who still need to submit and avoid bothering students who have already completed it.
+
+**Preconditions:**
+- PRE-1. The instructor is logged into the system.
+- PRE-2. The instructor is assigned to the course section whose students are being reviewed.
+- PRE-3. The selected reporting week is one of the section's active weeks.
+
+**Postconditions:**
+- POST-1. The system displays the list of students in the instructor's section who are still missing the selected submission.
+- POST-2. A reminder email is sent only to the students selected by the instructor and only if they are still missing the required submission at the time the reminder is sent.
+
+**Main Success Scenario:**
+1. The instructor indicates to nudge students who have not submitted required weekly work.
+2. The system asks the instructor to select a course section, a reporting week, and the due item to review (weekly activity report, peer evaluation, or both).
+3. The instructor selects the section, reporting week, and due item(s) and confirms that she has finished.
+4. The system validates the selections and compares the selected due item(s) against each student's submitted work for that reporting period.
+5. The system displays the list of students in the section who are eligible to submit and still missing the required artifact(s), grouped by team and sorted by last name.
+6. The instructor reviews the list and chooses the students to receive a reminder.
+7. The system asks the instructor to confirm sending the reminder.
+8. The instructor confirms sending the reminder.
+9. The system sends a reminder email only to each selected student who still has a missing submission at the moment of sending and does not send duplicates to students who already submitted or were excluded from eligibility.
+10. The system records the reminder for the selected due item and week so that the same student is not reminded again during the same reporting window (BR-reminder-once-per-window).
+11. Use case ends.
+
+**Extensions:**
+- **4a. The selected week is not one of the section's active weeks or the due item's submission window has closed:**
+  - 4a1. The system does not produce a non-submitter list for that week and informs the instructor that reminders are sent only for active weeks and open submission windows (BR-active-weeks, BR-evaluation-submission-window).
+  - 4a2. Use case ends.
+- **4b. A student is not assigned to a team in the selected section:**
+  - 4b1. The system excludes the student from the non-submitter list because a student without a team assignment has no submission obligation for the weekly activity report or peer evaluation (BR-team-assignment-required).
+  - 4b2. The system continues evaluating the remaining students.
+- **4c. A student submitted a report or evaluation and then deleted it before the reminder is sent:**
+  - 4c1. The system treats the student as a non-submitter because the required artifact is no longer present, and the reminder remains valid for the current reporting window.
+  - 4c2. The system continues evaluating the remaining students.
+- **6a. The instructor requests a second reminder for the same student and the same due item in the same reporting window:**
+  - 6a1. The system blocks the duplicate reminder and informs the instructor that at most one reminder may be sent per student, per due item, per reporting week (BR-reminder-once-per-window).
+  - 6a2. The instructor either selects a different student or cancels the operation.
+- **9a. The mail server rejects the student's email address:**
+  - 9a1. The system logs the failure, skips that student, and continues sending to the remaining students.
+  - 9a2. Use case ends.
+
+**Priority:** High
+**Frequency of Use:** Approximately 1 user, 1 usage per week per section.
+**Business Rules:** BR-section-scoped-access, BR-role-based-access, BR-team-assignment-required, BR-active-weeks, BR-evaluation-submission-window, BR-reminder-once-per-window
+
+**Associated Information:**
+- Non-submitter definition: A student is counted as a non-submitter only when she is a member of the selected course section's team roster, the selected week is active for that section, and the required artifact for the selected due item has not been submitted and remains missing at the time the list is generated. A student who is not assigned to a team is excluded from the list, and a submitted artifact that has since been deleted is treated as missing.
+- Reminder delivery: The reminder email uses the student's current section contact email and says which submission is still missing. The instructor shall be able to cancel the use case at any time before confirmation.
+
+**Assumptions:**
+**Open Issues:**
+
 ## **Weekly Activity Report**
 
 ### **UC-WAR-manage-activities: The student manages activities in a Weekly Activity Report (WAR)**
